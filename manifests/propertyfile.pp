@@ -5,11 +5,12 @@ define confluent::propertyfile (
 
   $keys = keys(merge({}, $propertyhash))
 
-  ::confluent::property { $keys:
-    propertyfile => $name,
-    component    => $component,
-    settingshash => $propertyhash,
-  }
-
-
+  each($keys) |$key| {
+    ini_setting { "${component}_${key}":
+      setting => $key,
+      section => "",
+      value   => $propertyhash[$key],
+      path    => $name,
+    }
+  } 
 }
